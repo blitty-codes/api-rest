@@ -6,7 +6,7 @@ const registerSchema = new Schema({
     lastName: { type: String, required: [true, 'Last name required'] }, 
     mail: { type: String, unique: true, required: [true, 'Mail required'] },
     password: { type: String, required: [true, 'Password required'] },
-    phone: { type: Number, minlength: 9, maxlength: 9},
+    phone: { type: Number, min: 9},
     date: { type: Date, default: Date.now() }
 })
 
