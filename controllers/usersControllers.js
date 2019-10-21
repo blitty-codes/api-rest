@@ -1,16 +1,16 @@
-const user = require('../models/register')
+const User = require('../models/register')
 
 //GET all users
 findAllRegisters = (req, res) => {
-    user.find((err, registers) => {
+    User.find((err, registers) => {
         if (err) res.status(404).send(`ERROR: ${err}`)
         else res.status(200).send(registers)
     })
 }
 
-// GET a user by ID
+// GET user by ID
 findIdRegister = (req, res) => {
-    user.findById(req.params.id, (err, userId) => {
+    User.findById(req.params.id, (err, userId) => {
         if (err) res.status(404).send(`ERROR: ${err}`)
         if (!userId) res.status(404).send({ message: 'No user found' })
 
@@ -21,7 +21,7 @@ findIdRegister = (req, res) => {
 // POST send all data
 addRegister = (req, res) => {
 
-    const NewRegister = new user({
+    const newRegister = new User({
         name: req.body.name,
         lastName: req.body.lastName,
         mail: req.body.mail,
@@ -29,11 +29,10 @@ addRegister = (req, res) => {
         phone: req.body.phone,
     })
 
-    NewRegister.save((err) => {
-        if (err) res.status(400).send({ message: 'No user saved', err })
+    newRegister.save((err) => {
+        if (err) return res.status(400).send({ message: 'No user saved', err })
+        res.send(newRegister)
     })
-
-    res.send(NewRegister)
 }
 
 module.exports = {
