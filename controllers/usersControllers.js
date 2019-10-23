@@ -10,9 +10,9 @@ findAllRegisters = (req, res) => {
 
 // GET user by ID
 findIdRegister = (req, res) => {
-    User.findById(req.params.id, (err, userId) => {
-        if (err) res.status(404).send(`ERROR: ${err}`)
-        if (!userId) res.status(404).send({ message: 'No user found' })
+    User.findById(req.body.id, (err, userId) => {
+        if (err) return res.status(404).send(`ERROR: ${err}`)
+        if (!userId) return res.status(404).send({ message: 'No user found' })
 
         res.status(200).send({ userId })
     })
@@ -38,43 +38,43 @@ addRegister = (req, res) => {
 // Delete user by email
 deleteUser = (req, res) => {
 
-    const userPass = req.params.password
-    const userMail = req.params.mail
+    const userPass = req.body.password
+    const userMail = req.body.mail
 
     // find the user in the DB
     User.find({ mail: userMail}, (err, user) => {
         // Handle errors
-        if (err) res.send(400).send({ message: 'No mail searched', err })
-        if (user[0].mail != userMail && user[0].password != userPass) res.status(404).send({ message: 'Wrong' })
-        else User.deleteOne({ mail: userMail }).then(res.status(200).send({ message: 'The user has been deleted' }))
+        if (err) return res.status(400).send({ message: 'No mail searched', err })
+        if (user[0].mail != userMail && user[0].password != userPass) return res.status(404).send({ message: 'Wrong' })
+        User.deleteOne({ mail: userMail }).then(res.status(200).send({ message: 'The user has been deleted' }))
     })
 
 }
 
 updateUser = (req, res) => {
 
-    const userName = req.params.nameU
-    const userMail = req.params.mail
-    const userPass = req.params.password
+    const userName = req.body.name
+    const userMail = req.body.mail
+    const userPass = req.body.password
 
     User.find({ mail: userMail }, (err, user) => {
         // Handle errors
-        if (err) res.send(400).send({ message: 'No mail searched', err })
-        if (user[0].name === userName && user[0].password != userPass) res.status(404).send({ message: 'Wrong' })
-        else User.updateOne({ name: userName }).then(res.status(200).send({ message: 'The user has been updated' }))
+        if (err) return res.status(400).send({ message: 'No mail searched', err })
+        if (user[0].name === userName && user[0].password != userPass) return res.status(404).send({ message: 'Wrong' })
+        User.updateOne({ name: userName }).then(res.status(200).send({ message: 'The user has been updated' }))
     })
 
 }
 
 const loginUser = (req, res) => {
 
-    const userMail = req.params.mail
-    const userPass = req.params.password
+    const userMail = req.body.mail
+    const userPass = req.body.password
 
     User.find({ mail: userMail, password: userPass}, (err, user) => {
         // Handle errors
-        if (err) res.send(400).send({ message: 'No user searched', err })
-        else res.status(200).send({ message: `Welcome!!     ${user}` })
+        if (err) return res.status(400).send({ message: 'No user searched', err })
+        res.status(200).send({ message: `Welcome!! ${user}` })
     })
 
 }
