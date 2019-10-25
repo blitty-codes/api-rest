@@ -3,7 +3,7 @@ const User = require('../models/register')
 //GET all users
 findAllRegisters = (req, res) => {
     User.find((err, registers) => {
-        if (err) res.status(404).send(`ERROR: ${err}`)
+        if (err) return res.status(404).send(`ERROR: ${err}`)
         else res.status(200).send(registers)
     })
 }
@@ -51,6 +51,7 @@ deleteUser = (req, res) => {
 
 }
 
+// Update the users name
 updateUser = (req, res) => {
 
     const userName = req.body.name
@@ -66,6 +67,7 @@ updateUser = (req, res) => {
 
 }
 
+// The user can login
 const loginUser = (req, res) => {
 
     const userMail = req.body.mail
