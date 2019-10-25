@@ -1,11 +1,13 @@
 const express = require('express'),
     bodyParser = require('body-parser'),// poder coger las peticiones
-    routes = require('./routes/usersRoutes')
+    usersroutes = require('./routes/usersRoutes'),
+    booksroutes = require('./routes/booksRoutes')
 
 const app = express()
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use('/', routes)
+app.use('/', usersroutes)
+app.use('/books', booksroutes)
 
 module.exports = app;
