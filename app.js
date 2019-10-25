@@ -1,7 +1,10 @@
-const express = require('express'),
-    bodyParser = require('body-parser'),// poder coger las peticiones
-    usersroutes = require('./routes/usersRoutes'),
-    booksroutes = require('./routes/booksRoutes')
+/* eslint-disable linebreak-style */
+/* eslint-disable semi */
+
+const express = require('express');
+const bodyParser = require('body-parser');// poder coger las peticiones
+const usersroutes = require('./routes/usersRoutes');
+const booksroutes = require('./routes/booksRoutes')
 
 const app = express()
 
@@ -10,4 +13,4 @@ app.use(bodyParser.json())
 app.use('/', usersroutes)
 app.use('/books', booksroutes)
 
-module.exports = app;
+module.exports = app

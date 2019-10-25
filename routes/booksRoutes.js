@@ -1,3 +1,6 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable semi */
+
 const express = require('express')
 const controllers = require('../controllers/booksControllers')
 
