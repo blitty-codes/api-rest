@@ -1,5 +1,4 @@
 /* eslint-disable consistent-return */
-/* eslint-disable array-callback-return */
 
 const User = require('../models/register');
 
@@ -7,7 +6,7 @@ const User = require('../models/register');
 const findAllRegisters = (req, res) => {
   User.find((err, registers) => {
     if (err) return res.status(404).send(`ERROR: ${err}`);
-    res.status(200).send(registers);
+    return res.status(200).send(registers);
   });
 };
 

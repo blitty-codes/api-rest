@@ -7,8 +7,8 @@ const book = new Schema({
   author: { type: String, required: [true, 'What\'s the author name?'] },
   ISBN: { type: String, unique: true, required: [true, 'We need this information'] },
   price: { type: Number, required: [true, 'What\'s the price?'] },
-  publisher: { type: String },
-  description: { type: String },
+  publisher: { type: String, required: [true, 'Publisher is required'] },
+  description: { type: String, required: [true, 'Description is needed'] },
   publicationDate: { type: String, required: [true, 'We need the publication day'] },
 });
 
