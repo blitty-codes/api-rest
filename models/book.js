@@ -1,9 +1,6 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable semi */
+const mongoose = require('mongoose');
 
-const mongoose = require('mongoose')
-
-const { Schema } = mongoose
+const { Schema } = mongoose;
 
 const book = new Schema({
   title: { type: String, required: [true, 'Please send me the title'] },
@@ -12,7 +9,7 @@ const book = new Schema({
   price: { type: Number, required: [true, 'What\'s the price?'] },
   publisher: { type: String },
   description: { type: String },
-  publicationDate: { type: String, required: [true, 'We need the publication day'] }
-})
+  publicationDate: { type: String, required: [true, 'We need the publication day'] },
+});
 
-module.exports = mongoose.model('books', book)
+module.exports = mongoose.model('books', book);
