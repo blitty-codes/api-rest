@@ -1,5 +1,6 @@
 {
     "env": {
+        "commonjs": true,
         "es6": true,
         "node": true
     },
@@ -15,5 +16,6 @@
         "sourceType": "module"
     },
     "rules": {
+        "no-console": "off"
     }
 }
