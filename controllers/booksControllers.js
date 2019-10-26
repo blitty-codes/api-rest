@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 /* eslint-disable consistent-return */
 
 const book = require('../models/book');
@@ -17,7 +16,7 @@ const addBook = (req, res) => {
   });
 
   newBook.save((err) => {
-    if (err) return res.status(400).send({ message: 'No book saved' });
+    if (err) return res.status(500).send({ message: 'No book saved', err });
     res.send(newBook);
   });
 };
@@ -25,7 +24,7 @@ const addBook = (req, res) => {
 // GET all books in the DB
 const getAllBooks = (req, res) => {
   book.find((err, books) => {
-    if (err) return res.status(404).send(`ERROR: ${err}`);
+    if (err) return res.status(500).send(`ERROR: ${err}`);
     return res.status(200).send(books);
   });
 };
@@ -36,10 +35,10 @@ const getBookbyISBN = (req, res) => {
 
   // find the book in the DB
   book.findOne({ ISBN: userISBN }, (err, search) => {
-    if (err) return res.status(400).send({ message: 'No ISBN searched', err });
-    if (search.length === 0) return res.status(404).send({ message: 'Wrong ISBN' });
+    if (err) return res.status(500).send({ message: 'No ISBN searched', err });
+    if (search === null) return res.status(404).send({ message: 'Wrong ISBN' });
 
-    res.status(200).send({ search });
+    return res.status(200).send({ search });
   });
 };
 
@@ -49,10 +48,10 @@ const getBookbytitle = (req, res) => {
 
   // find books by title
   book.findOne({ title: userTitle }, (err, search) => {
-    if (err) return res.status(400).send({ message: 'No title searched', err });
+    if (err) return res.status(500).send({ message: 'No title searched', err });
     if (search.length === 0) return res.status(404).send({ message: 'Wrong title' });
 
-    res.status(200).send({ search });
+    return res.status(200).send({ search });
   });
 };
 
@@ -62,10 +61,10 @@ const getBookbyauthor = (req, res) => {
 
   // find books by author
   book.find({ author: userAuthor }, (err, search) => {
-    if (err) return res.status(400).send({ message: 'No author searched', err });
+    if (err) return res.status(500).send({ message: 'No author searched', err });
     if (search.length === 0) return res.status(404).send({ message: 'Wrong author' });
 
-    res.status(200).send({ search });
+    return res.status(200).send({ search });
   });
 };
 
@@ -74,7 +73,7 @@ const getBookbyprice = (req, res) => {
 
   book.find({ price: userPrice }, (err, search) => {
     console.log(search);
-    if (err) return res.status(400).send({ message: 'No book found', err });
+    if (err) return res.status(500).send({ message: 'No book found', err });
     if (search.length === 0) return res.status(404).send({ message: 'No books with that price' });
 
     return res.status(200).send({ search });
@@ -85,10 +84,10 @@ const getBookbypublisher = (req, res) => {
   const userPublisher = req.body.publisher;
 
   book.find({ publisher: userPublisher }, (err, search) => {
-    if (err) return res.status(400).send({ message: 'No book found', err });
+    if (err) return res.status(500).send({ message: 'No book found', err });
     if (search.length === 0) return res.status(404).send({ message: 'No books with that publisher' });
 
-    res.status(200).send({ search });
+    return res.status(200).send({ search });
   });
 };
 
@@ -96,10 +95,10 @@ const getBookbypublicationDate = (req, res) => {
   const userpublicationDate = req.body.publicationDate;
 
   book.find({ publicationDate: userpublicationDate }, (err, search) => {
-    if (err) return res.status(400).send({ message: 'No book found', err });
+    if (err) return res.status(500).send({ message: 'No book found', err });
     if (search.length === 0) return res.status(404).send({ message: 'No books with that publication date' });
 
-    res.status(200).send({ search });
+    return res.status(200).send({ search });
   });
 };
 
@@ -108,7 +107,7 @@ const getBookbydescription = (req, res) => {
   const found = [];
 
   book.find((err, search) => {
-    if (err) return res.status(400).send({ message: 'No book found', err });
+    if (err) return res.status(500).send({ message: 'No book found', err });
     if (search.length === 0) return res.status(404).send({ message: 'No books with that publication date' });
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < search.length; i++) {
@@ -116,7 +115,7 @@ const getBookbydescription = (req, res) => {
         found.push(search[i]);
       }
     }
-    res.status(200).send(found);
+    return res.status(200).send(found);
   });
 };
 

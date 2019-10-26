@@ -5,7 +5,7 @@ const User = require('../models/register');
 // GET all users
 const findAllRegisters = (req, res) => {
   User.find((err, registers) => {
-    if (err) return res.status(404).send(`ERROR: ${err}`);
+    if (err) return res.status(500).send(`ERROR: ${err}`);
     return res.status(200).send(registers);
   });
 };
@@ -13,7 +13,7 @@ const findAllRegisters = (req, res) => {
 // GET user by ID
 const findIdRegister = (req, res) => {
   User.findById(req.body.id, (err, userId) => {
-    if (err) return res.status(404).send(`ERROR: ${err}`);
+    if (err) return res.status(500).send(`ERROR: ${err}`);
     if (!userId) return res.status(404).send({ message: 'No user found' });
 
     res.status(200).send({ userId });
@@ -31,7 +31,7 @@ const addRegister = (req, res) => {
   });
 
   newRegister.save((err) => {
-    if (err) return res.status(400).send({ message: 'No user saved', err });
+    if (err) return res.status(500).send({ message: 'No user saved', err });
     res.send(newRegister);
   });
 };
@@ -44,7 +44,7 @@ const deleteUser = (req, res) => {
   // find the user in the DB
   User.find({ mail: userMail }, (err, user) => {
     // Handle errors
-    if (err) return res.status(400).send({ message: 'No mail searched', err });
+    if (err) return res.status(500).send({ message: 'No mail searched', err });
     if (user[0].mail !== userMail && user[0].password !== userPass) return res.status(404).send({ message: 'Wrong' });
     User.deleteOne({ mail: userMail }).then(res.status(200).send({ message: 'The user has been deleted' }));
   });
@@ -58,7 +58,7 @@ const updateUser = (req, res) => {
 
   User.find({ mail: userMail }, (err, user) => {
     // Handle errors
-    if (err) return res.status(400).send({ message: 'No mail searched', err });
+    if (err) return res.status(500).send({ message: 'No mail searched', err });
     if (user[0].name === userName && user[0].password !== userPass) return res.status(404).send({ message: 'Wrong' });
     User.updateOne({ name: userName }).then(res.status(200).send({ message: 'The user has been updated' }));
   });
@@ -71,7 +71,7 @@ const loginUser = (req, res) => {
 
   User.find({ mail: userMail, password: userPass }, (err, user) => {
     // Handle errors
-    if (err) return res.status(400).send({ message: 'No user searched', err });
+    if (err) return res.status(500).send({ message: 'No user searched', err });
     res.status(200).send({ message: `Welcome!! ${user}` });
   });
 };
