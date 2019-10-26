@@ -12,5 +12,7 @@ route.get('/price', controllers.getBookbyprice);
 route.get('/publisher', controllers.getBookbypublisher);
 route.get('/description', controllers.getBookbydescription);
 route.get('/publicationDate', controllers.getBookbypublicationDate);
+route.delete('/deleteBook', controllers.deleteBook);
+route.put('/updateBook', controllers.updateBook);
 
 module.exports = route;

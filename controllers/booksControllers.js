@@ -17,7 +17,7 @@ const addBook = (req, res) => {
 
   newBook.save((err) => {
     if (err) return res.status(500).send({ message: 'No book saved', err });
-    res.send(newBook);
+    return res.status(200).send(newBook);
   });
 };
 
@@ -72,7 +72,6 @@ const getBookbyprice = (req, res) => {
   const userPrice = req.body.price;
 
   book.find({ price: userPrice }, (err, search) => {
-    console.log(search);
     if (err) return res.status(500).send({ message: 'No book found', err });
     if (search.length === 0) return res.status(404).send({ message: 'No books with that price' });
 
@@ -119,6 +118,31 @@ const getBookbydescription = (req, res) => {
   });
 };
 
+const deleteBook = (req, res) => {
+  const userISBN = req.body.ISBN;
+
+  // find the user in the DB
+  book.find({ ISBN: userISBN }, (err, search) => {
+    // Handle errors
+    if (err) return res.status(500).send({ message: 'No ISBN searched', err });
+    if (search[0].length === 0) return res.status(404).send({ message: 'No book' });
+    book.deleteOne({ ISBN: userISBN }).then(res.status(200).send({ message: 'The book has been deleted' }));
+  });
+};
+
+const updateBook = (req, res) => {
+  const userISBN = req.body.ISBN;
+  const userDescription = req.body.description;
+  // find the user in the DB
+
+  book.find({ ISBN: userISBN }, (err, search) => {
+    // Handle errors
+    if (err) return res.status(500).send({ message: 'No ISBN searched', err });
+    if (search[0].length === 0) return res.status(404).send({ message: 'No book' });
+    book.updateOne({ description: userDescription }).then(res.status(200).send({ message: 'The book has been updated' }));
+  });
+};
+
 module.exports = {
   addBook,
   getBookbyISBN,
@@ -129,4 +153,6 @@ module.exports = {
   getBookbypublisher,
   getBookbypublicationDate,
   getBookbydescription,
+  deleteBook,
+  updateBook,
 };
