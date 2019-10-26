@@ -110,7 +110,6 @@ const getBookbydescription = (req, res) => {
   book.find((err, search) => {
     if (err) return res.status(400).send({ message: 'No book found', err });
     if (search.length === 0) return res.status(404).send({ message: 'No books with that publication date' });
-    // eslint-disable-next-line guard-for-in
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < search.length; i++) {
       if (search[i].description.includes(userDescription) === true) {
