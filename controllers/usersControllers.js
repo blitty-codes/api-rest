@@ -1,4 +1,6 @@
 /* eslint-disable consistent-return */
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/register');
 
@@ -16,7 +18,7 @@ const findIdRegister = (req, res) => {
     if (err) return res.status(500).send(`ERROR: ${err}`);
     if (!userId) return res.status(404).send({ message: 'No user found' });
 
-    res.status(200).send({ userId });
+    return res.status(200).send({ userId });
   });
 };
 
@@ -32,7 +34,7 @@ const addRegister = (req, res) => {
 
   newRegister.save((err) => {
     if (err) return res.status(500).send({ message: 'No user saved', err });
-    res.send(newRegister);
+    return res.send(newRegister);
   });
 };
 
@@ -68,11 +70,29 @@ const updateUser = (req, res) => {
 const loginUser = (req, res) => {
   const userMail = req.body.mail;
   const userPass = req.body.password;
+  const key = process.env.SECRET_TOKEN || 'BlittyPadax';
 
-  User.find({ mail: userMail, password: userPass }, (err, user) => {
+  User.find({ mail: userMail }, (err, login) => {
     // Handle errors
     if (err) return res.status(500).send({ message: 'No user searched', err });
-    res.status(200).send({ message: `Welcome!! ${user}` });
+    // eslint-disable-next-line prefer-arrow-callback
+    bcrypt.compare(userPass, login[0].password, function (err1, ok) {
+      if (err1) return res.status(500).send({ message: 'Error', err1 });
+      // Equal
+      if (ok) {
+        const payload = {
+          name: login.user,
+          mail: login.mail,
+          phone: login.phone,
+          date: login.date,
+        };
+
+        jwt.sign(payload, key, (jwtErr, token) => {
+          if (jwtErr) return res.status(400).send({ message: 'Error', jwtErr });
+          return res.status(200).send({ message: 'Access', token });
+        });
+      } else return res.status(400).send({ message: 'Password was incorrect' });
+    });
   });
 };
 

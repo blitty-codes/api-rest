@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const { Schema } = mongoose;
 
@@ -9,6 +10,14 @@ const registerSchema = new Schema({
   password: { type: String, required: [true, 'Password required'] },
   phone: { type: String, minlength: 9, maxlength: 9 },
   date: { type: Date, default: Date.now() },
+});
+
+registerSchema.pre('save', function (next) {
+  bcrypt.hash(this.password, 10, (err1, hash) => {
+    if (err1) console.log(err1);
+    this.password = hash;
+    next();
+  });
 });
 
 module.exports = mongoose.model('Users', registerSchema);
