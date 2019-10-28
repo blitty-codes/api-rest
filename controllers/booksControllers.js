@@ -36,7 +36,7 @@ const getBookbyISBN = (req, res) => {
   // find the book in the DB
   book.findOne({ ISBN: userISBN }, (err, search) => {
     if (err) return res.status(500).send({ message: 'No ISBN searched', err });
-    if (search === null) return res.status(404).send({ message: 'Wrong ISBN' });
+    if (search) return res.status(404).send({ message: 'Wrong ISBN' });
 
     return res.status(200).send({ search });
   });
@@ -47,7 +47,7 @@ const getBookbytitle = (req, res) => {
   const userTitle = req.body.title;
 
   // find books by title
-  book.findOne({ title: userTitle }, (err, search) => {
+  book.find({ title: userTitle }, (err, search) => {
     if (err) return res.status(500).send({ message: 'No title searched', err });
     if (search.length === 0) return res.status(404).send({ message: 'Wrong title' });
 
@@ -131,15 +131,31 @@ const deleteBook = (req, res) => {
 };
 
 const updateBook = (req, res) => {
-  const userISBN = req.body.ISBN;
-  const userDescription = req.body.description;
+  // eslint-disable-next-line new-cap
+  const toUpdateBook = new book({
+    title: req.body.title,
+    author: req.body.author,
+    ISBN: req.body.ISBN,
+    description: req.body.description,
+    price: req.body.price,
+    publisher: req.body.publisher,
+    publicationDate: req.body.publicationDate,
+  });
+
   // find the user in the DB
 
-  book.find({ ISBN: userISBN }, (err, search) => {
+  book.find({ ISBN: toUpdateBook.ISBN }, (err, search) => {
     // Handle errors
     if (err) return res.status(500).send({ message: 'No ISBN searched', err });
     if (search[0].length === 0) return res.status(404).send({ message: 'No book' });
-    book.updateOne({ description: userDescription }).then(res.status(200).send({ message: 'The book has been updated' }));
+    book.updateOne({
+      title: toUpdateBook.title,
+      author: toUpdateBook.author,
+      description: toUpdateBook.description,
+      price: toUpdateBook.price,
+      publisher: toUpdateBook.publisher,
+      publicationDate: toUpdateBook.publicationDate,
+    }).then(res.status(200).send({ message: 'The book has been updated' }));
   });
 };
 

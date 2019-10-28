@@ -9,7 +9,7 @@ const book = new Schema({
   price: { type: Number, required: [true, 'What\'s the price?'] },
   publisher: { type: String, required: [true, 'Publisher is required'] },
   description: { type: String, required: [true, 'Description is needed'] },
-  publicationDate: { type: String, required: [true, 'We need the publication day'] },
+  publicationDate: { type: String, required: [true, 'We need the publication day'], default: Date.now() },
 });
 
 module.exports = mongoose.model('books', book);
