@@ -70,7 +70,7 @@ const updateUser = (req, res) => {
 const loginUser = (req, res) => {
   const userMail = req.body.mail;
   const userPass = req.body.password;
-  const key = process.env.SECRET_TOKEN || 'BlittyPadax';
+  const key = 'BlittyPadax'; // process.env.SECRET_TOKEN || 'BlittyPadax';
 
   User.find({ mail: userMail }, (err, login) => {
     // Handle errors
@@ -81,10 +81,10 @@ const loginUser = (req, res) => {
       // Equal
       if (ok) {
         const payload = {
-          name: login.user,
-          mail: login.mail,
-          phone: login.phone,
-          date: login.date,
+          name: login[0].name,
+          mail: login[0].mail,
+          phone: login[0].phone,
+          date: login[0].date,
         };
 
         jwt.sign(payload, key, (jwtErr, token) => {
