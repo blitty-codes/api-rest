@@ -69,8 +69,7 @@ const updateUser = (req, res) => {
 const verifyToken = (res, token, payload) => {
   const key = process.env.SECRET_TOKEN || 'VyXrp9R6VcbrmlpWfAyqOBG1K03HShKUnxEH4tzzBYv9gzBNAY';
 
-  if (token === undefined) return sign(res, payload, key);
-  return validate(token, res, key);
+  return sign(res, payload, key);
 };
 
 // The user can login
