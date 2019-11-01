@@ -1,8 +1,8 @@
 /* eslint-disable consistent-return */
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
 const User = require('../models/register');
+const { sign, validate } = require('../middleware/tokenValidation');
 
 // GET all users
 const findAllRegisters = (req, res) => {
@@ -66,15 +66,23 @@ const updateUser = (req, res) => {
   });
 };
 
+const verifyToken = (res, token, payload) => {
+  const key = process.env.SECRET_TOKEN || 'VyXrp9R6VcbrmlpWfAyqOBG1K03HShKUnxEH4tzzBYv9gzBNAY';
+
+  if (token === undefined) return sign(res, payload, key);
+  return validate(token, res, key);
+};
+
 // The user can login
 const loginUser = (req, res) => {
   const userMail = req.body.mail;
   const userPass = req.body.password;
-  const key = 'BlittyPadax'; // process.env.SECRET_TOKEN || 'BlittyPadax';
 
   User.find({ mail: userMail }, (err, login) => {
     // Handle errors
+    if (login.length === 0) return res.status(404).send({ message: 'No users in DB', err });
     if (err) return res.status(500).send({ message: 'No user searched', err });
+
     // eslint-disable-next-line prefer-arrow-callback
     bcrypt.compare(userPass, login[0].password, function (err1, ok) {
       if (err1) return res.status(500).send({ message: 'Error', err1 });
@@ -87,11 +95,8 @@ const loginUser = (req, res) => {
           date: login[0].date,
         };
 
-        jwt.sign(payload, key, (jwtErr, token) => {
-          if (jwtErr) return res.status(400).send({ message: 'Error', jwtErr });
-          return res.status(200).send({ message: 'Access', token });
-        });
-      } else return res.status(400).send({ message: 'Password was incorrect' });
+        return verifyToken(res, req.body.token, payload);
+      } return res.status(401).send({ message: 'Password was incorrect' });
     });
   });
 };
