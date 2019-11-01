@@ -2,7 +2,7 @@
 const bcrypt = require('bcrypt');
 
 const User = require('../models/register');
-const { sign, validate } = require('../middleware/tokenValidation');
+const { sign } = require('../middleware/tokenValidation');
 
 // GET all users
 const findAllRegisters = (req, res) => {
@@ -43,13 +43,19 @@ const deleteUser = (req, res) => {
   const userPass = req.body.password;
   const userMail = req.body.mail;
 
-  // find the user in the DB
-  User.find({ mail: userMail }, (err, user) => {
-    // Handle errors
-    if (err) return res.status(500).send({ message: 'No mail searched', err });
-    if (user[0].mail !== userMail && user[0].password !== userPass) return res.status(404).send({ message: 'Wrong' });
-    User.deleteOne({ mail: userMail }).then(res.status(200).send({ message: 'The user has been deleted' }));
-  });
+  // verify if is the same user
+  if (userMail === req.body.decodedToken.mail) {
+    bcrypt.compare(userPass, req.body.decodedToken.password, (err) => {
+      if (err) return res.status(401).send({ message: 'Sorry but your credentials are wrong', err });
+
+      // find the user in the DB
+      User.find({ mail: userMail, password: userPass }, (errDB) => {
+        // Handle errors
+        if (errDB) return res.status(500).send({ message: 'No mail searched', errDB });
+        return User.deleteOne({ mail: userMail }).then(res.status(200).send({ message: `The user ${req.body.decodedToken.name} has been deleted` }));
+      });
+    });
+  }
 };
 
 // Update the users name
@@ -62,20 +68,15 @@ const updateUser = (req, res) => {
     // Handle errors
     if (err) return res.status(500).send({ message: 'No mail searched', err });
     if (user[0].name === userName && user[0].password !== userPass) return res.status(404).send({ message: 'Wrong' });
-    User.updateOne({ name: userName }).then(res.status(200).send({ message: 'The user has been updated' }));
+    return User.updateOne({ name: userName }).then(res.status(200).send({ message: 'The user has been updated' }));
   });
-};
-
-const verifyToken = (res, token, payload) => {
-  const key = process.env.SECRET_TOKEN || 'VyXrp9R6VcbrmlpWfAyqOBG1K03HShKUnxEH4tzzBYv9gzBNAY';
-
-  return validate(res, token, payload, key);
 };
 
 // The user can login
 const loginUser = (req, res) => {
   const userMail = req.body.mail;
   const userPass = req.body.password;
+  const key = process.env.SECRET_TOKEN || 'VyXrp9R6VcbrmlpWfAyqOBG1K03HShKUnxEH4tzzBYv9gzBNAY';
 
   User.find({ mail: userMail }, (err, login) => {
     // Handle errors
@@ -90,11 +91,10 @@ const loginUser = (req, res) => {
         const payload = {
           name: login[0].name,
           mail: login[0].mail,
-          phone: login[0].phone,
-          date: login[0].date,
+          password: login[0].password,
         };
 
-        return verifyToken(res, req.body.token, payload);
+        return sign(res, payload, key);
       } return res.status(401).send({ message: 'Password was incorrect' });
     });
   });
