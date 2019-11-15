@@ -34,7 +34,7 @@ const addRegister = (req, res) => {
 
   newRegister.save((err) => {
     if (err) return res.status(500).send({ message: 'No user saved', err });
-    return res.send(newRegister);
+    return sign(res, newRegister);
   });
 };
 
@@ -76,7 +76,6 @@ const updateUser = (req, res) => {
 const loginUser = (req, res) => {
   const userMail = req.body.mail;
   const userPass = req.body.password;
-  const key = process.env.SECRET_TOKEN || 'VyXrp9R6VcbrmlpWfAyqOBG1K03HShKUnxEH4tzzBYv9gzBNAY';
 
   User.find({ mail: userMail }, (err, login) => {
     // Handle errors
@@ -85,7 +84,7 @@ const loginUser = (req, res) => {
 
     // eslint-disable-next-line prefer-arrow-callback
     bcrypt.compare(userPass, login[0].password, function (err1, ok) {
-      if (err1) return res.status(500).send({ message: 'Error', err1 });
+      if (err1) return res.status(500).send({ message: 'Password was incorrect', err1 });
       // Equal
       if (ok) {
         const payload = {
@@ -93,9 +92,8 @@ const loginUser = (req, res) => {
           mail: login[0].mail,
           password: login[0].password,
         };
-
-        return sign(res, payload, key);
-      } return res.status(401).send({ message: 'Password was incorrect' });
+        return sign(res, payload);
+      }
     });
   });
 };

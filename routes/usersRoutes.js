@@ -8,7 +8,11 @@ route.get('/registers', controller.findAllRegisters);
 route.get('/registers', controller.findIdRegister);
 route.post('/loginUser', controller.loginUser);
 route.post('/addRegister', controller.addRegister);
-route.delete('/deleteUser', validate, controller.deleteUser);
+route.delete('/deleteUser', controller.deleteUser);
 route.put('/updateUser', controller.updateUser);
+
+
+// ROUTE VALIDATE TOKEN
+route.post('/tokenValidation', validate, (req, res) => { res.status(200); });
 
 module.exports = route;
