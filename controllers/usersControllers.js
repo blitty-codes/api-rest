@@ -34,7 +34,8 @@ const addRegister = (req, res) => {
 
   newRegister.save((err) => {
     if (err) return res.status(500).send({ message: 'No user saved', err });
-    return sign(res, newRegister);
+    // return res.status(200).send({ newRegister });
+    sign(res, { newRegister });
   });
 };
 
