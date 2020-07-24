@@ -12,7 +12,7 @@ const validate = (req, res, next) => {
 };
 
 const sign = (res, payload) => {
-  jwt.sign(payload, key, { expiresIn: 500 }, (jwtErr, token) => {
+  jwt.sign(payload, key, { expiresIn: 50000 }/* { expiresIn: 500 } */, (jwtErr, token) => {
     if (jwtErr) return res.status(400).send({ message: 'Error', jwtErr });
     return res.status(200).send({ token });
   });
